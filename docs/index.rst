@@ -6,7 +6,7 @@
 ni
 ==
 
-**disk models for nulling interferometry**
+**disk modelling for nulling interferometry**
 
 .. toctree::
    :maxdepth: 2

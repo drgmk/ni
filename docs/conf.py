@@ -111,6 +111,11 @@ pygments_style = 'sphinx'
 todo_include_todos = True
 
 
+# -- Options for numpydoc -------------------------------------------------
+
+numpydoc_class_members_toctree = False
+
+
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -120,7 +125,14 @@ html_theme = 'alabaster'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = {}
+html_theme_options = {
+    'github_user': 'drgmk',
+    'github_repo': 'ni',
+    'show_related': True,
+    'page_width': '940px',
+    'sidebar_width': '220px',
+    'fixed_sidebar': True
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
@@ -160,7 +172,9 @@ html_static_path = ['_static']
 #html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-#html_sidebars = {}
+html_sidebars = {
+    '**':       ['localtoc.html', 'relations.html','searchbox.html']
+}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.

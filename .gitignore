@@ -2,4 +2,7 @@
 __pycache__
 .cache
 *.pyc
-ni.egg_info/
+ni.egg-info/
+docs/_build/
+docs/_templates/
+docs/_static/

@@ -25,24 +25,7 @@ class Observatory(object):
     mirror_spacing : float
         Mirror spacing of interferometer
     lat : float
-        Lattitude of the given observatory
-
-    Methods
-    -------
-    transmission(phi=None,n_theta=100,inc=None,omegalbti=None)
-        Returns the transmission array of an azimuthally integrated 
-        radial disk profile through the LBTI fringe pattern.
-    t_null(phiproj)
-        Returns the transmission of a projected point on the disk through
-        the interferometer fringe pattern.
-    fringe_spacing()
-        Calculates the distance to the first transmission peak using the 
-        initialised attributes.
-    altitude(has,dec)
-        Returns the altitude of the target star over a range of hour 
-        angles.
-    parallactic_angle(has,dec):
-        Returns the position angles of the target star in degrees.        
+        Lattitude of the given observatory        
     '''
     
     def __init__(self,wav=11.0,observatory="lbti"):

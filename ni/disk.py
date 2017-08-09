@@ -29,20 +29,12 @@ class Disk(object):
         
     Attributes
     ----------
-    nrb : float
-        Number of radial bins.
-    radii : array
-        Linear array of radii from 0 to nr.
-    rb : array
-        Calculates radial bins from rin to rout.
-    rm : array
-        Calculates value at centre of each bin.
-    drm : array
-        Size of each bin.
+    r : array
+        Calculates value at centre of each radial bin.
     rarcs : array
-        rm in arcseconds.
+        r in arcseconds.
     tbb : array
-        Black body temperature of each bin centre rm.
+        Black body temperature of each bin centre r.
     sigzodi : float
         1 zodi surface density by defintion after integrating Kelsall model
         g(xi) over column to get multiplier of 0.629991 for 1.13e-7 volume 
@@ -52,20 +44,8 @@ class Disk(object):
     aream : array
         Area in AU^2 of each bin.
     sig : array
-        Total dust area in each of the rm bins in AU^2.
-        
-    Methods
-    -------
-    fnu_disk()
-        Returns the flux profile for a simple power-law axisymmetric 
-        optically-thin disk.
-    snu_disk()
-        Returns the surface brightness profile for a simple power-law
-        optically thin disk.
-    bnu_Jy_sr(wav,t)
-        A function that returns the black body spectral radiance in Jy/sr 
-        for a given temperature and at one or more given wavelengths (in um).
-    '''
+        Total dust area in each of the r bins in AU^2.
+    '''        
     
     
     
@@ -92,17 +72,16 @@ class Disk(object):
         self.rout = float(rout)*np.sqrt(lstar)
         self.r0 = float(r0)*np.sqrt(lstar)
 
-        self.nr = nr
-        self.nrb = nr + 1
-        self.radii = np.linspace(0,self.nr,self.nrb)
-        self.rb = self.rin + (self.rout-self.rin)*self.radii/self.nr
-        self.rm = 0.5*(self.rb[1:self.nrb]+self.rb[0:-1])
-        self.drm = np.diff(self.rb)
-        self.rarcs = self.rm/self.dist
-        self.tbb = 278.3*(self.lstar**0.25)/np.sqrt(self.rm)
+        nrb = nr + 1
+        rb = np.linspace(self.rin,self.rout,nrb)
+        drm = np.diff(rb)       
+        self.r = 0.5*(rb[1:nrb]+rb[0:-1])
+        self.rarcs = self.r/self.dist
+        
+        self.tbb = 278.3*(self.lstar**0.25)/np.sqrt(self.r)
         self.sigzodi = 7.11889e-8
-        self.bigsig = self.sigzodi*self.z*(self.rm/self.r0)**(-self.alpha)
-        self.aream = 2*np.pi*self.rm*self.drm
+        self.bigsig = self.sigzodi*self.z*(self.r/self.r0)**(-self.alpha)
+        self.aream = 2*np.pi*self.r*drm
         self.sig = self.aream*self.bigsig
     
     
@@ -152,7 +131,3 @@ class Disk(object):
         fnudisk = self.fnu_disk()
         snudisk = fnudisk/(self.aream/self.dist**2)
         return snudisk
-    
-    
-    
-

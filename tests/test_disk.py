@@ -1,25 +1,14 @@
 import pytest
 import numpy as np
 
-from .context import ni
+from .context import ni  
 
-def number_of_bins_test():
+def test_number_of_radii():
     nr = 100
-    nrb = nr + 1
-    dsk = ni.disk.Disk(lstar=1.0,tstar=5800.0,dist=10.0,nr=nr)
-    assert(len(dsk.nrb)==nrb)
-    assert(len(dsk.rb)==nrb)
-    assert(len(dsk.radii)==nrb)
-    
-
-def number_of_radii_test():
-    nr = 100
-    dsk = ni.disk.Disk(lstar=1.0,tstar=5800.0,dist=10.0,nr=nr)
+    dsk = ni.disk.Disk(lstar=1.0,dist=10.0,nr=nr)
     fnudisk = dsk.fnu_disk()
     snudisk = dsk.snu_disk()
-    assert(len(dsk.nr)==nr)
-    assert(len(dsk.rm)==nr)
-    assert(len(dsk.drm)==nr)
+    assert(len(dsk.r)==nr)
     assert(len(dsk.rarcs)==nr)
     assert(len(dsk.tbb)==nr)
     assert(len(dsk.bigsig)==nr)
@@ -28,35 +17,34 @@ def number_of_radii_test():
     assert(len(fnudisk)==nr)
     assert(len(snudisk)==nr)
     
-def attributes_are_floats_test():
-    dsk = ni.disk.Disk(lstar=1,tstar=5800,dist=10,alpha=1,z=1,wav=11,nr=100)
-    assert(np.dtype(dsk.lstar)==float)
-    assert(np.dtype(dsk.tstar)==float)
-    assert(np.dtype(dsk.dist)==float)
-    assert(np.dtype(dsk.alpha)==float)
-    assert(np.dtype(dsk.z)==float)
-    assert(np.dtype(dsk.wav)==float)
-    assert(np.dtype(dsk.rin)==float)
-    assert(np.dtype(dsk.rout)==float)
-    assert(np.dtype(dsk.r0)==float)
+def test_attributes_are_floats():
+    dsk = ni.disk.Disk(lstar=1,dist=10,alpha=1,z=1,wav=11,nr=100)
+    assert(dsk.lstar == float(dsk.lstar))
+    assert(dsk.dist == float(dsk.dist))
+    assert(dsk.alpha == float(dsk.alpha))
+    assert(dsk.z == float(dsk.z))
+    assert(dsk.wav == float(dsk.wav))
+    assert(dsk.rin == float(dsk.rin))
+    assert(dsk.rout == float(dsk.rout))
+    assert(dsk.r0 == float(dsk.r0))
     
     
-def Bnu_Jy_sr_outputs_float_test():
-    dsk = ni.disk.Disk(lstar=1.0,tstar=5800.0,dist=10.0)
+def test_Bnu_Jy_sr_outputs_float():
+    dsk = ni.disk.Disk(lstar=1,dist=10)
     ret = dsk.bnu_Jy_sr(dsk.wav,dsk.tbb)
-    assert(np.dtype(ret)==float)
+    assert(ret.dtype == float)
     
     
-def fnu_disk_outputs_float_test():
-    dsk = ni.disk.Disk(lstar=1.0,tstar=5800.0,dist=10.0)
+def test_fnu_disk_outputs_float():
+    dsk = ni.disk.Disk(lstar=1,dist=10)
     fnudisk = dsk.fnu_disk()
-    assert(np.dtype(fnudisk)==float)
+    assert(fnudisk.dtype == float)
     
     
-def snu_disk_outputs_float_test():
-    dsk = ni.disk.Disk(lstar=1.0,tstar=5800.0,dist=10.0)
+def test_snu_disk_outputs_float():
+    dsk = ni.disk.Disk(lstar=1,dist=10)
     snudisk = dsk.snu_disk()
-    assert(np.dtype(snudisk)==float)
+    assert(snudisk.dtype == float)
     
 
     

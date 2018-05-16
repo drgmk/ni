@@ -1,4 +1,4 @@
 # ni
 zodi levels for nulling interferometry
 
-Of course, the reason there's nothing here is because this package doesn't actually exist yet.
+Basic API documentation at http://drgmk.com/docs/ni

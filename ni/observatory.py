@@ -92,7 +92,7 @@ class Observatory(object):
         
         if has_input == 'ha':
             # Convert hour angles to degrees unless given in degrees.
-            has *= 360/24.0
+            has = has * 360/24.0
 
         delta = np.deg2rad(dec)
         h = self.altitude(has,dec)

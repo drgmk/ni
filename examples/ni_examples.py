@@ -122,7 +122,6 @@ class NI_Examples(object):
         Tarray = obs.transmission(phi=dsk.rarcs,
                                   n_theta=100,
                                   inc=np.array([0]),omegalbti=np.array([0]))
-
         snudisk=dsk.snu_disk()
         r = dsk.r
         fig = plt.figure()
@@ -135,28 +134,22 @@ class NI_Examples(object):
     
     def flux_orientations(self):
         '''Figure 5: Transmitted fluxes for random orientations'''
-
-        obs = Observatory()
-        dsk = Disk(lstar=1.0,dist=10.0,nr=1000)
-        fnudisk = dsk.fnu_disk()
-        FTarray = []
         
-        for i in range(0,10000):
-            Tarray = obs.transmission(phi=dsk.rarcs,n_theta=100,
-                                      inc=np.arccos(np.random.uniform(0,1.0,1)),
-                                      omegalbti=np.random.uniform(0,np.pi,1))
-            FT = fnudisk * Tarray[:,0]
-            FTsum = np.sum(FT)
-            FTarray.append(FTsum)
-            
+        dsk = Disk(lstar=1.0,dist=10.0,nr=100)
+        obs = Observatory()
+        fnudisk = dsk.fnu_disk()
+        omegalbti = np.random.uniform(0,np.pi,10000)
+        inc = np.arccos(np.random.uniform(0,1.0,10000))
+        Tarray = obs.transmission(phi=dsk.rarcs,inc=inc,omegalbti=omegalbti)
+        fnudisk_tile = np.tile(fnudisk,(len(inc),1)).transpose()
+        FT=fnudisk_tile * Tarray
+        FTsum = np.sum(FT,axis=0)
+        weights = np.ones_like(FTsum)/float(len(FTsum))
         fig = plt.figure()
-        FTarray = np.array(FTarray)
-        weights = np.ones_like(FTarray)/float(len(FTarray))
-        plt.hist(FTarray/(1e-3),bins=21,weights=weights)
+        plt.hist(FTsum/(1e-3),bins=21,weights=weights)
         plt.xlabel('Transmitted flux (mJy)')
-        plt.ylabel('Fraction of orientations')
-        fig.savefig('fig5.png')
-            
+        plt.ylabel('Fraction of orientations')        
+        fig.savefig('fig5.png')        
         
     def HA_transmission(self):
         '''Figure 7: Instantaneous transmission through range of hour angles'''
@@ -323,8 +316,9 @@ class NI_Examples(object):
         tstar = 5800.0
         HA = np.linspace(-30,30,100)
         PA = np.deg2rad(obs.parallactic_angle(HA,60))
+        fnustar = 1.77*dsk.bnu_Jy_sr(obs.wav,tstar)*dsk.lstar*tstar**(-4)/(dsk.dist**2)
         
-        for i in range(0,200):
+        for i in range(0,100):
             incinput = np.arccos(np.random.uniform(0,1.0,1))
             omegalbtiinput = np.random.uniform(0,np.pi,1)
             Tarray = obs.transmission(phi=dsk.rarcs,n_theta=100,
@@ -332,9 +326,9 @@ class NI_Examples(object):
                                       omegalbti=omegalbtiinput + PA)
             Tarray = np.mean(Tarray,axis=1)
             print(i)
-            fnustar = 1.77*dsk.bnu_Jy_sr(obs.wav,tstar)*dsk.lstar*tstar**(-4)/(dsk.dist**2)
+           
             FT = (fnudisk * Tarray)/fnustar
-            FTsum = np.sum(FT)
+            FTsum = np.mean(FT)
             FTarray.append(FTsum)
         FTarray = np.array(FTarray)
         z = (1e-4)/FTarray

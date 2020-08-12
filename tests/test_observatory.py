@@ -33,8 +33,8 @@ def test_Tarray_single_orientation_shape():
                               inc=np.array([0]),omegalbti=np.array([0]))
     radii_length = len(Tarray[:,0])
     orientation_length = len(Tarray[0,:])
-    assert(radii_length == len(obs.phi))
-    assert(orientation_length == len(obs.inc))
+    assert(radii_length == 5)
+    assert(orientation_length == 1)
 
     
 def test_Tarray_multiple_orientation_shape():
@@ -43,6 +43,6 @@ def test_Tarray_multiple_orientation_shape():
                               inc=np.array([1,2,3,4]),omegalbti=np.array([1,2,3,4]))
     radii_length = len(Tarray[:,0])
     orientation_length = len(Tarray[0,:])
-    assert(radii_length == len(obs.phi))
-    assert(orientation_length == len(obs.inc))
+    assert(radii_length == 5)
+    assert(orientation_length == 4)
     

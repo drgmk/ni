@@ -36,6 +36,7 @@ class Observatory(object):
         if observatory is "lbti":
             self.mirror_spacing = 14.4
             self.lat = 32.7016
+            self.psf = self.lbti_psf
         elif observatory is "keck":
             self.mirror_spacing = 85.0
             self.lat = 19.286
@@ -44,7 +45,25 @@ class Observatory(object):
             
         self.phi_null = self.fringe_spacing()
     
+
+    def lbti_psf(self,phi):
+        '''Return the normalised single-telescope PSF.
         
+        Parameters
+        ----------
+        phi : array
+            Angular separations in arcseconds at which to compute PSF.
+            
+        Returns
+        -------
+        psf : array
+            PSF at given separations.
+        '''
+        fwhm = 0.312
+        sig = fwhm/2.355
+        return 1/(sig*np.sqrt(2*np.pi)) * np.exp(-0.5*(phi/sig)**2)
+        
+
     def altitude(self,has,dec):
         """Returns the altitude of the target star over a range of hour 
         angles in degrees.
@@ -71,8 +90,8 @@ class Observatory(object):
         
     
     def parallactic_angle(self,has,dec,has_input='deg'):
-        '''Returns the position angles of the target star in degrees.
-        default hasinput='deg'
+        '''Returns the position angle of the LBTI fringe pattern w.r.t
+        to North.
         
         Parameters
         ----------
@@ -181,16 +200,13 @@ class Observatory(object):
             raise Exception('omegalbti: Must enter a numpy array of length 1 or greater')   
         
         
-        self.phi = phi
         self.n_theta = n_theta
         #self.theta = np.linspace(0,2*np.pi,self.theta)
         self.theta = (2*np.pi)/(self.n_theta) * np.linspace(0,self.n_theta-1,self.n_theta)
-        self.inc = inc
-        self.omegalbti = omegalbti
         
         # Tile the phi array with dimensions n_phi to a square matrix with 
         # dimensions [n_phi,n_orientations]
-        phi_proj_part1_tile1 = np.tile(phi,(len(self.inc),1))
+        phi_proj_part1_tile1 = np.tile(phi,(len(inc),1))
         
         # Tile again to create phi matrix with dimensions 
         # [n_phi,n_orientations,n_theta]
@@ -198,11 +214,11 @@ class Observatory(object):
                                        (self.theta.size,1,1)).transpose() 
         
         # Bracket part of eq. (6) 
-        phi_proj_part2 = np.add(np.outer(np.sin(self.omegalbti),np.cos(self.theta)),np.outer(np.multiply(np.cos(self.omegalbti),np.cos(self.inc)),np.sin(self.theta)))
+        phi_proj_part2 = np.add(np.outer(np.sin(omegalbti),np.cos(self.theta)),np.outer(np.multiply(np.cos(omegalbti),np.cos(inc)),np.sin(self.theta)))
         
         # Tile equation 6 part to match phi matrix dimensions, 
         # [n_phi,n_orientations,n_theta]
-        phi_proj_part2_tile = np.tile(phi_proj_part2,(len(self.phi),1,1))
+        phi_proj_part2_tile = np.tile(phi_proj_part2,(len(phi),1,1))
         
         # phi matrix times the bracket part of eq. (6) 
         phi_proj =  np.multiply(phi_proj_part1_tile2,phi_proj_part2_tile)
